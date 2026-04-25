@@ -1,0 +1,47 @@
+<div class="text-center py-20">
+    <h1 class="text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+        Split Expenses, <span class="text-indigo-600">Not Friendships.</span>
+    </h1>
+    <p class="text-xl text-slate-600 mb-10 max-w-2xl mx-auto">
+        Track shared expenses and compute optimized settlement plans with our intelligent engine.
+    </p>
+    
+    <% if (!locals.user) { %>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/auth/register" class="bg-indigo-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all">
+                Create Account
+            </a>
+            <a href="/auth/login" class="bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-slate-50 transition-all">
+                Sign In
+            </a>
+        </div>
+    <% } else { %>
+        <a href="/groups" class="bg-indigo-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all">
+            Go to Groups
+        </a>
+    <% } %>
+
+    <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+            <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-4 mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3 class="text-lg font-bold mb-2">Group Sharing</h3>
+            <p class="text-slate-500">Create groups for trips, roommates, or events and invite your friends easily.</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+            <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 mb-4 mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><path d="M4 14.899 13 3l-2.437 9h6.437L8 21l2.438-9z"/></svg>
+            </div>
+            <h3 class="text-lg font-bold mb-2">Smart Splits</h3>
+            <p class="text-slate-500">Split by equal amount, percentage, or custom values. We handle the math.</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+            <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 mb-4 mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .52 8.125A5 5 0 0 0 14 20a5 5 0 0 0 6-7.105 4 4 0 0 0-2.526-5.77A3 3 0 1 0 12 5"/><path d="M12 13v-1"/><path d="M12 17v-1"/><path d="M12 9V8"/></svg>
+            </div>
+            <h3 class="text-lg font-bold mb-2">Settlement Engine</h3>
+            <p class="text-slate-500">Our graph algorithm minimizes the number of transactions to clear all debts.</p>
+        </div>
+    </div>
+</div>

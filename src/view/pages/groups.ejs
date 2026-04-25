@@ -1,0 +1,36 @@
+<div class="flex items-center justify-between mb-8">
+    <h2 class="text-3xl font-bold">My Groups</h2>
+    <a href="/groups/create" class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition">
+        + Create New Group
+    </a>
+</div>
+
+<% if (groups.length === 0) { %>
+    <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center">
+        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">No groups yet</h3>
+        <p class="text-slate-500 mb-6">Create a group to start sharing expenses with friends.</p>
+        <a href="/groups/create" class="text-indigo-600 font-bold hover:underline">Start by creating your first group</a>
+    </div>
+<% } else { %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% groups.forEach(group => { %>
+            <a href="/groups/<%= group.id %>" class="group bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-slate-900 group-hover:text-indigo-600 transition tracking-tight"><%= group.name %></h3>
+                    <span class="px-2 py-1 bg-emerald-50 text-emerald-600 text-xs font-bold rounded uppercase"><%= group.status %></span>
+                </div>
+                <p class="text-slate-500 text-sm mb-6 line-clamp-2"><%= group.description || 'No description provided.' %></p>
+                <div class="flex items-center text-slate-400 text-xs font-medium uppercase gap-4">
+                    <span class="flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <%= group.member_count %> Members
+                    </span>
+                    <span>Created <%= new Date(group.created_at).toLocaleDateString() %></span>
+                </div>
+            </a>
+        <% }) %>
+    </div>
+<% } %>
