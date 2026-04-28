@@ -1,0 +1,44 @@
+<%- include('../partials/page-head') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+
+  <div class="main-area">
+    <main class="main-content main-content--wide">
+      <div class="page-hero">
+        <div>
+          <a href="#" class="back-link" id="backToGroup">← Back to group</a>
+          <p class="page-kicker">Settlements</p>
+          <h1 class="page-title">Settlement Plan</h1>
+          <p class="page-sub" id="planMeta">Choose a group to view settlement suggestions.</p>
+        </div>
+        <div class="page-hero__actions">
+          <button type="button" class="btn btn-ghost btn-sm" id="downloadSettlementPdfBtn">Download PDF</button>
+          <select id="settlementGroupSelect" class="form-input form-input--compact"></select>
+        </div>
+      </div>
+
+      <div class="settlement-grid">
+        <section class="card card--soft">
+          <div class="card-header-row">
+            <h2 class="card-title">Transactions</h2>
+            <span class="badge" id="txCount">0 transactions</span>
+          </div>
+          <div id="transactionsList" class="stack-list"></div>
+        </section>
+
+        <section class="card card--soft">
+          <div class="card-header-row">
+            <h2 class="card-title">History</h2>
+          </div>
+          <div id="historyList" class="stack-list"></div>
+        </section>
+      </div>
+    </main>
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script src="/js/settlement.js"></script>
+</body>
+</html>

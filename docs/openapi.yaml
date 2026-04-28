@@ -1,0 +1,1117 @@
+openapi: 3.0.3
+info:
+  title: Expense Splitter API
+  version: 1.0.0
+  description: REST API for the Expense Splitter backend.
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+tags:
+  - name: Health
+  - name: Auth
+  - name: Users
+  - name: Groups
+  - name: Expenses
+  - name: Settlements
+security:
+  - bearerAuth: []
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Health check
+      responses:
+        "200":
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSuccessResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSuccessResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+  /api/auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshInput"
+      responses:
+        "200":
+          description: Tokens refreshed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "401":
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout current user
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Request a password reset token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordInput"
+      responses:
+        "200":
+          description: Always returns success to avoid email enumeration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+  /api/auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Reset password with token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordInput"
+      responses:
+        "200":
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+  /api/users/me:
+    get:
+      tags: [Users]
+      summary: Get own profile
+      responses:
+        "200":
+          description: Profile fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      tags: [Users]
+      summary: Update own profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileInput"
+      responses:
+        "200":
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+    delete:
+      tags: [Users]
+      summary: Soft delete own account
+      responses:
+        "200":
+          description: Account deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+  /api/users/me/change-password:
+    post:
+      tags: [Users]
+      summary: Change password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordInput"
+      responses:
+        "200":
+          description: Password changed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+  /api/groups:
+    get:
+      tags: [Groups]
+      summary: List groups for the current user
+      responses:
+        "200":
+          description: Groups fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupListResponse"
+    post:
+      tags: [Groups]
+      summary: Create a group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateGroupInput"
+      responses:
+        "201":
+          description: Group created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+  /api/groups/join/{token}:
+    get:
+      tags: [Groups]
+      summary: Join a group using an invite token
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Joined group successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid or expired invite link
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/groups/{groupId}:
+    get:
+      tags: [Groups]
+      summary: Get a group summary
+      parameters:
+        - $ref: "#/components/parameters/groupId"
+      responses:
+        "200":
+          description: Group fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupSummaryResponse"
+        "404":
+          description: Group not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      tags: [Groups]
+      summary: Update a group
+      parameters:
+        - $ref: "#/components/parameters/groupId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateGroupInput"
+      responses:
+        "200":
+          description: Group updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+    delete:
+      tags: [Groups]
+      summary: Delete a group
+      parameters:
+        - $ref: "#/components/parameters/groupId"
+      responses:
+        "200":
+          description: Group deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "409":
+          description: Outstanding balances prevent deletion
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/groups/{groupId}/balances:
+    get:
+      tags: [Groups]
+      summary: Get balances for a group
+      parameters:
+        - $ref: "#/components/parameters/groupId"
+      responses:
+        "200":
+          description: Balances computed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BalanceListResponse"
+  /api/groups/{groupId}/invite:
+    get:
+      tags: [Groups]
+      summary: Generate an invite link
+      parameters:
+        - $ref: "#/components/parameters/groupId"
+      responses:
+        "200":
+          description: Invite link generated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InviteLinkResponse"
+  /api/groups/{groupId}/members:
+    post:
+      tags: [Groups]
+      summary: Add a member to a group
+      parameters:
+        - $ref: "#/components/parameters/groupId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddMemberInput"
+      responses:
+        "200":
+          description: Member added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+  /api/groups/{groupId}/members/{userId}:
+    delete:
+      tags: [Groups]
+      summary: Remove a member from a group
+      parameters:
+        - $ref: "#/components/parameters/groupId"
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          description: Member removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "409":
+          description: Outstanding balance prevents removal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/expenses:
+    get:
+      tags: [Expenses]
+      summary: List expenses
+      parameters:
+        - name: groupId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: paidBy
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: Expenses fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpenseListResponse"
+    post:
+      tags: [Expenses]
+      summary: Create an expense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateExpenseInput"
+      responses:
+        "201":
+          description: Expense created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpenseResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+  /api/expenses/{expenseId}:
+    get:
+      tags: [Expenses]
+      summary: Get one expense
+      parameters:
+        - $ref: "#/components/parameters/expenseId"
+      responses:
+        "200":
+          description: Expense fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpenseResponse"
+    put:
+      tags: [Expenses]
+      summary: Update an expense
+      parameters:
+        - $ref: "#/components/parameters/expenseId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateExpenseInput"
+      responses:
+        "200":
+          description: Expense updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpenseResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+    delete:
+      tags: [Expenses]
+      summary: Soft delete an expense
+      parameters:
+        - $ref: "#/components/parameters/expenseId"
+      responses:
+        "200":
+          description: Expense deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+  /api/settlements/plan/{groupId}:
+    get:
+      tags: [Settlements]
+      summary: Compute settlement plan for a group
+      parameters:
+        - $ref: "#/components/parameters/groupId"
+      responses:
+        "200":
+          description: Settlement plan computed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SettlementPlanResponse"
+        "404":
+          description: Group not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/settlements/execute:
+    post:
+      tags: [Settlements]
+      summary: Execute a settlement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteSettlementInput"
+      responses:
+        "201":
+          description: Settlement recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SettlementResponse"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+  /api/settlements/history/{groupId}:
+    get:
+      tags: [Settlements]
+      summary: Get settlement history
+      parameters:
+        - $ref: "#/components/parameters/groupId"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: Settlement history fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SettlementHistoryListResponse"
+  /api/settlements/{settlementId}/cancel:
+    patch:
+      tags: [Settlements]
+      summary: Cancel a pending settlement
+      parameters:
+        - $ref: "#/components/parameters/settlementId"
+      responses:
+        "200":
+          description: Settlement cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "404":
+          description: Settlement not found or cannot be cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    groupId:
+      name: groupId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    expenseId:
+      name: expenseId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    settlementId:
+      name: settlementId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        timestamp:
+          type: string
+          format: date-time
+    MessageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+      required: [success, message]
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+        errors:
+          nullable: true
+      required: [success, message]
+    ValidationErrorResponse:
+      allOf:
+        - $ref: "#/components/schemas/ErrorResponse"
+        - type: object
+          properties:
+            errors:
+              type: array
+              items:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                  param:
+                    type: string
+                  value: {}
+    User:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        email: { type: string, format: email }
+        avatar_url: { type: string, nullable: true }
+        timezone: { type: string }
+        currency: { type: string }
+        email_verified: { type: boolean }
+        is_active: { type: boolean }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    AuthTokens:
+      type: object
+      properties:
+        accessToken: { type: string }
+        refreshToken: { type: string }
+    AuthResponse:
+      type: object
+      properties:
+        user: { $ref: "#/components/schemas/User" }
+        tokens: { $ref: "#/components/schemas/AuthTokens" }
+    AuthSuccessResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data: { $ref: "#/components/schemas/AuthResponse" }
+      required: [success, message, data]
+    TokenResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data:
+          $ref: "#/components/schemas/AuthTokens"
+    UserResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data: { $ref: "#/components/schemas/User" }
+    RegisterInput:
+      type: object
+      required: [name, email, password]
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
+        password: { type: string }
+        currency: { type: string, example: INR }
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+    RefreshInput:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken: { type: string }
+    ForgotPasswordInput:
+      type: object
+      required: [email]
+      properties:
+        email: { type: string, format: email }
+    ResetPasswordInput:
+      type: object
+      required: [token, password]
+      properties:
+        token: { type: string }
+        password: { type: string }
+    UpdateProfileInput:
+      type: object
+      properties:
+        name: { type: string }
+        avatar_url: { type: string }
+        timezone: { type: string }
+        currency: { type: string }
+    ChangePasswordInput:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword: { type: string }
+        newPassword: { type: string }
+    Group:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        currency: { type: string }
+        status:
+          type: string
+          enum: [active, settling, archived]
+        created_by: { type: string, format: uuid }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        user_role:
+          type: string
+          nullable: true
+        member_count:
+          type: integer
+    GroupMember:
+      type: object
+      properties:
+        user_id: { type: string, format: uuid }
+        name: { type: string }
+        email: { type: string, format: email }
+        avatar_url: { type: string, nullable: true }
+        role:
+          type: string
+          enum: [admin, member, viewer]
+        joined_at: { type: string, format: date-time }
+    GroupSummary:
+      allOf:
+        - $ref: "#/components/schemas/Group"
+        - type: object
+          properties:
+            members:
+              type: array
+              items:
+                $ref: "#/components/schemas/GroupMember"
+            total_expenses:
+              type: number
+            member_count:
+              type: integer
+            settlement_status:
+              type: string
+              enum: [pending, settled]
+    CreateGroupInput:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }
+        description: { type: string }
+        currency: { type: string, example: INR }
+    UpdateGroupInput:
+      type: object
+      properties:
+        name: { type: string }
+        description: { type: string }
+        status:
+          type: string
+          enum: [active, settling, archived]
+    AddMemberInput:
+      type: object
+      required: [email]
+      properties:
+        email: { type: string, format: email }
+        role:
+          type: string
+          enum: [member, viewer]
+    GroupListResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Group"
+    GroupResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data: { $ref: "#/components/schemas/Group" }
+    GroupSummaryResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data: { $ref: "#/components/schemas/GroupSummary" }
+    Balance:
+      type: object
+      properties:
+        user_id: { type: string, format: uuid }
+        name: { type: string }
+        email: { type: string, format: email }
+        balance: { type: number }
+    BalanceListResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Balance"
+    InviteLinkResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data:
+          type: object
+          properties:
+            link: { type: string }
+    Expense:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        group_id: { type: string, format: uuid }
+        paid_by: { type: string, format: uuid }
+        description: { type: string }
+        amount: { type: number }
+        currency: { type: string }
+        category: { type: string }
+        split_type:
+          type: string
+          enum: [equal, percentage, custom]
+        expense_date: { type: string, format: date }
+        notes: { type: string, nullable: true }
+        receipt_url: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        payer_name: { type: string, nullable: true }
+    SplitInput:
+      type: object
+      properties:
+        user_id: { type: string, format: uuid }
+        amount: { type: number }
+        percentage: { type: number }
+    CreateExpenseInput:
+      type: object
+      required: [group_id, paid_by, description, amount, split_type]
+      properties:
+        group_id: { type: string, format: uuid }
+        paid_by: { type: string, format: uuid }
+        description: { type: string }
+        amount: { type: number }
+        currency: { type: string }
+        category: { type: string }
+        split_type:
+          type: string
+          enum: [equal, percentage, custom]
+        participants:
+          type: array
+          items:
+            type: string
+            format: uuid
+        splits:
+          type: array
+          items:
+            $ref: "#/components/schemas/SplitInput"
+        expense_date:
+          type: string
+          format: date
+        notes:
+          type: string
+        receipt_url:
+          type: string
+    UpdateExpenseInput:
+      type: object
+      properties:
+        description: { type: string }
+        amount: { type: number }
+        category: { type: string }
+        split_type:
+          type: string
+          enum: [equal, percentage, custom]
+        participants:
+          type: array
+          items:
+            type: string
+            format: uuid
+        splits:
+          type: array
+          items:
+            $ref: "#/components/schemas/SplitInput"
+        expense_date:
+          type: string
+          format: date
+        notes:
+          type: string
+    ExpenseWithSplits:
+      allOf:
+        - $ref: "#/components/schemas/Expense"
+        - type: object
+          properties:
+            splits:
+              type: array
+              items:
+                type: object
+                properties:
+                  user_id: { type: string, format: uuid }
+                  name: { type: string }
+                  email: { type: string, format: email }
+                  amount: { type: number }
+                  percentage: { type: number, nullable: true }
+                  is_settled: { type: boolean }
+    ExpenseListResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExpenseWithSplits"
+        meta:
+          type: object
+          properties:
+            page: { type: integer }
+            limit: { type: integer }
+            total: { type: integer }
+            totalPages: { type: integer }
+    ExpenseResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data:
+          $ref: "#/components/schemas/ExpenseWithSplits"
+    SettlementTransaction:
+      type: object
+      properties:
+        from_user_id: { type: string, format: uuid }
+        from_name: { type: string }
+        to_user_id: { type: string, format: uuid }
+        to_name: { type: string }
+        amount: { type: number }
+        currency: { type: string }
+    SettlementPlan:
+      type: object
+      properties:
+        group_id: { type: string, format: uuid }
+        transactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/SettlementTransaction"
+        total_transactions: { type: integer }
+        computed_at: { type: string, format: date-time }
+    SettlementPlanResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data:
+          $ref: "#/components/schemas/SettlementPlan"
+    ExecuteSettlementInput:
+      type: object
+      required: [group_id, from_user_id, to_user_id, amount]
+      properties:
+        group_id: { type: string, format: uuid }
+        from_user_id: { type: string, format: uuid }
+        to_user_id: { type: string, format: uuid }
+        amount: { type: number }
+        settlement_type:
+          type: string
+          enum: [full, partial]
+        notes:
+          type: string
+        idempotency_key:
+          type: string
+    Settlement:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        group_id: { type: string, format: uuid }
+        from_user_id: { type: string, format: uuid }
+        to_user_id: { type: string, format: uuid }
+        amount: { type: number }
+        currency: { type: string }
+        status:
+          type: string
+          enum: [pending, completed, cancelled]
+        settlement_type:
+          type: string
+          enum: [full, partial]
+        notes:
+          type: string
+          nullable: true
+        settled_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    SettlementResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data:
+          $ref: "#/components/schemas/Settlement"
+    SettlementHistoryItem:
+      allOf:
+        - $ref: "#/components/schemas/Settlement"
+        - type: object
+          properties:
+            from_name: { type: string }
+            to_name: { type: string }
+    SettlementHistoryListResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SettlementHistoryItem"
+        meta:
+          type: object
+          properties:
+            page: { type: integer }
+            limit: { type: integer }
+            total: { type: integer }
+            totalPages: { type: integer }

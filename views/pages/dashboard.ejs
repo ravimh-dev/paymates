@@ -1,0 +1,72 @@
+<%- include('../partials/page-head') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+
+  <div class="main-area">
+  <main class="main-content main-content--wide">
+    <div class="page-hero">
+      <div>
+        <p class="page-kicker">Overview</p>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-sub" id="dashboardGreeting">Welcome back</p>
+      </div>
+      <div class="page-hero__actions">
+        <a href="/groups" class="btn btn-ghost">Browse Groups</a>
+        <button type="button" class="btn btn-primary" id="newGroupBtn">+ New Group</button>
+      </div>
+    </div>
+
+    <section id="dashboardStats" class="stat-grid"></section>
+
+    <section class="card card--soft">
+      <div class="card-header-row">
+        <div>
+          <h2 class="card-title">Your groups</h2>
+          <p class="card-hint">Open a group to manage expenses and settlements.</p>
+        </div>
+        <a href="/groups" class="btn btn-outline">Open all</a>
+      </div>
+      <div id="dashboardGroupsGrid" class="groups-grid"></div>
+    </section>
+
+    <div class="modal-overlay hidden" id="newGroupModal">
+      <div class="modal modal-large">
+        <div class="modal-header">
+          <h2 class="modal-title">Create Group</h2>
+          <button type="button" class="modal-close" id="closeGroupModal">×</button>
+        </div>
+        <div id="groupError" class="alert alert-error hidden"></div>
+        <form id="newGroupForm" class="modal-form">
+          <div class="form-group">
+            <label class="form-label">Group Name</label>
+            <input class="form-input" type="text" name="name" placeholder="Goa Trip 2026" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <input class="form-input" type="text" name="description" placeholder="Optional description" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Currency</label>
+            <select class="form-input" name="currency">
+              <option value="INR">INR</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="cancelGroupBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+  <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

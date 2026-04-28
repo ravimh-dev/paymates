@@ -1,0 +1,261 @@
+<%- include('../partials/page-head') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar') %>
+
+  <div class="main-area">
+    <main class="main-content main-content--wide">
+      <div class="page-hero">
+        <div>
+          <a href="/groups" class="back-link" id="groupBackLink">← Back to groups</a>
+          <p class="page-kicker" id="groupCurrency">INR</p>
+          <h1 class="page-title" id="groupName">Group</h1>
+          <p class="page-sub" id="groupSubtitle">Loading group details...</p>
+        </div>
+        <div class="page-hero__actions">
+          <span class="group-balance-chip" id="userBalanceBadge">Loading...</span>
+          <a href="#" class="btn btn-outline" id="groupSettleLink">View settlements</a>
+          <button type="button" class="btn btn-ghost" id="addMemberBtn">+ Member</button>
+          <button type="button" class="btn btn-ghost" id="inviteGroupBtn">Invite</button>
+          <button type="button" class="btn btn-ghost" id="editGroupBtn">Edit</button>
+          <button type="button" class="btn btn-danger" id="deleteGroupBtn">Delete</button>
+          <button type="button" class="btn btn-primary" id="addExpenseBtn">+ Expense</button>
+        </div>
+      </div>
+
+      <section id="groupSummary" class="stat-grid"></section>
+
+      <div class="group-layout">
+        <section class="card card--soft">
+          <div class="card-header-row">
+            <h2 class="card-title">Balances</h2>
+            <span class="badge" id="settlementPlanCount">0 transactions</span>
+          </div>
+          <div id="balancesList" class="stack-list"></div>
+        </section>
+
+        <section class="card card--soft">
+          <div class="card-header-row">
+            <h2 class="card-title">Expenses</h2>
+            <select id="categoryFilter" class="form-input form-input--compact">
+              <option value="">All categories</option>
+              <option value="food">Food</option>
+              <option value="transport">Transport</option>
+              <option value="accommodation">Accommodation</option>
+              <option value="entertainment">Entertainment</option>
+              <option value="utilities">Utilities</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div id="expensesList" class="stack-list"></div>
+        </section>
+
+        <section class="card card--soft">
+          <div class="card-header-row">
+            <h2 class="card-title">Settlement Plan</h2>
+            <a href="#" class="btn btn-outline btn-sm" id="groupSettleLink2">Open settlement view</a>
+          </div>
+          <div id="settlementPlanList" class="stack-list"></div>
+        </section>
+
+        <section class="card card--soft">
+          <div class="card-header-row">
+            <h2 class="card-title">Recent settlements</h2>
+          </div>
+          <div id="recentSettlementsList" class="stack-list"></div>
+        </section>
+
+        <section class="card card--soft">
+          <div class="card-header-row">
+            <h2 class="card-title">Members</h2>
+          </div>
+          <div id="membersList" class="stack-list"></div>
+        </section>
+      </div>
+
+      <div class="modal-overlay hidden" id="addMemberModal">
+        <div class="modal">
+          <div class="modal-header">
+            <h2 class="modal-title">Add Member</h2>
+            <button type="button" class="modal-close" id="closeMemberModal">×</button>
+          </div>
+          <div id="memberError" class="alert alert-error hidden"></div>
+          <form id="addMemberForm" class="modal-form">
+            <div class="form-group">
+              <label class="form-label">Email address</label>
+              <input class="form-input" type="email" name="email" placeholder="friend@example.com" required />
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-ghost" id="cancelMemberBtn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Add member</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-overlay hidden" id="addExpenseModal">
+        <div class="modal modal-large">
+          <div class="modal-header">
+            <h2 class="modal-title">Add Expense</h2>
+            <button type="button" class="modal-close" id="closeExpenseModal">×</button>
+          </div>
+          <div id="expError" class="alert alert-error hidden"></div>
+          <form id="addExpenseForm" class="modal-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Description</label>
+                <input class="form-input" type="text" name="description" placeholder="Dinner, cab, stay..." required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Amount</label>
+                <input class="form-input" type="number" name="amount" step="0.01" min="0.01" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Paid by</label>
+                <select class="form-input" name="paid_by" id="paidBySelect" required></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-input" name="category">
+                  <option value="food">Food</option>
+                  <option value="transport">Transport</option>
+                  <option value="accommodation">Accommodation</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="utilities">Utilities</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Split type</label>
+              <div class="split-tabs">
+                <button type="button" class="split-tab active" data-type="equal">Equal</button>
+                <button type="button" class="split-tab" data-type="percentage">Percentage</button>
+                <button type="button" class="split-tab" data-type="custom">Custom</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Participants</label>
+              <div class="participants-grid" id="participantsGrid"></div>
+            </div>
+            <div id="splitDetails"></div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-ghost" id="cancelExpenseBtn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Add expense</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-overlay hidden" id="editGroupModal">
+        <div class="modal modal-large">
+          <div class="modal-header">
+            <h2 class="modal-title">Edit Group</h2>
+            <button type="button" class="modal-close" id="closeGroupEditModal">Ã—</button>
+          </div>
+          <div id="groupEditError" class="alert alert-error hidden"></div>
+          <form id="editGroupForm" class="modal-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Group Name</label>
+                <input class="form-input" type="text" name="name" id="editGroupName" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Currency</label>
+                <input class="form-input" type="text" name="currency" id="editGroupCurrency" maxlength="3" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <input class="form-input" type="text" name="description" id="editGroupDescription" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select class="form-input" name="status" id="editGroupStatus">
+                <option value="active">Active</option>
+                <option value="settling">Settling</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-ghost" id="cancelGroupEditBtn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-overlay hidden" id="inviteGroupModal">
+        <div class="modal">
+          <div class="modal-header">
+            <h2 class="modal-title">Invite Link</h2>
+            <button type="button" class="modal-close" id="closeInviteModal">Ã—</button>
+          </div>
+          <div id="inviteError" class="alert alert-error hidden"></div>
+          <div class="form-group">
+            <label class="form-label">Link</label>
+            <input class="form-input" type="text" id="inviteLinkInput" readonly />
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="copyInviteBtn">Copy</button>
+            <button type="button" class="btn btn-primary" id="closeInviteBtn">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-overlay hidden" id="expenseDetailModal">
+        <div class="modal modal-large">
+          <div class="modal-header">
+            <h2 class="modal-title">Edit Expense</h2>
+            <button type="button" class="modal-close" id="closeExpenseDetailModal">Ã—</button>
+          </div>
+          <div id="expenseDetailError" class="alert alert-error hidden"></div>
+          <form id="expenseDetailForm" class="modal-form">
+            <input type="hidden" id="expenseDetailId" />
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Description</label>
+                <input class="form-input" type="text" name="description" id="expenseDetailDescription" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-input" name="category" id="expenseDetailCategory">
+                  <option value="food">Food</option>
+                  <option value="transport">Transport</option>
+                  <option value="accommodation">Accommodation</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="utilities">Utilities</option>
+                  <option value="shopping">Shopping</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Expense Date</label>
+                <input class="form-input" type="date" name="expense_date" id="expenseDetailDate" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Notes</label>
+                <input class="form-input" type="text" name="notes" id="expenseDetailNotes" />
+              </div>
+            </div>
+            <p class="form-help">Amount, payer, and splits are shown in the list but edited separately in the current backend flow.</p>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-danger" id="deleteExpenseBtn">Delete</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+    <%- include('../partials/footer') %>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script src="/js/group.js"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <a href="/dashboard" class="sidebar-brand">
+      <span class="sidebar-brand__mark">ES</span>
+      <span class="sidebar-brand__text">
+        <strong>Expense Splitter</strong>
+        <small>Split. Settle. Done.</small>
+      </span>
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Menu</div>
+    <nav class="sidebar-nav">
+      <a
+        href="/dashboard"
+        class="sidebar-link"
+        data-nav="dashboard"
+        id="navDashboard"
+      >
+        <span class="sidebar-link__icon">⌂</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="/groups" class="sidebar-link" data-nav="groups" id="navGroups">
+        <span class="sidebar-link__icon">◫</span>
+        <span>My Groups</span>
+      </a>
+      <a
+        href="/balances"
+        class="sidebar-link"
+        data-nav="balances"
+        id="navBalances"
+      >
+        <span class="sidebar-link__icon">≈</span>
+        <span>Balances</span>
+      </a>
+      <a
+        href="/notifications"
+        class="sidebar-link"
+        data-nav="notifications"
+        id="navNotifications"
+      >
+        <span class="sidebar-link__icon">!</span>
+        <span>Notifications</span>
+      </a>
+      <a
+        href="/settlements"
+        class="sidebar-link"
+        data-nav="settlements"
+        id="navSettlements"
+      >
+        <span class="sidebar-link__icon">⇄</span>
+        <span>Settlements</span>
+      </a>
+      <a
+        href="/history"
+        class="sidebar-link"
+        data-nav="history"
+        id="navHistory"
+      >
+        <span class="sidebar-link__icon">◌</span>
+        <span>History</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Quick Actions</div>
+    <div class="sidebar-actions">
+      <a href="/groups/create" class="btn btn-primary full-width"
+        >+ New Group</a
+      >
+      <button
+        type="button"
+        class="btn btn-ghost full-width"
+        id="logoutBtnSidebar"
+      >
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <div class="sidebar-section flex-fill">
+    <div class="sidebar-section-title">My Groups</div>
+    <ul class="sidebar-nav" id="sidebarGroupList">
+      <li class="sidebar-empty">Loading groups...</li>
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <a class="user-profile-sm" href="/profile" title="Open profile">
+      <div class="avatar" id="sidebarAvatar">?</div>
+      <div class="user-profile-info">
+        <div class="user-profile-name" id="sidebarUserName">User</div>
+        <div class="user-profile-email" id="sidebarUserEmail"></div>
+      </div>
+    </a>
+  </div>
+</aside>
